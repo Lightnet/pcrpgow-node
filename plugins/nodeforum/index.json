@@ -1,0 +1,7 @@
+{
+    "name": "Node Forum",
+    "information": "node forum test information",
+    "version":"0.0.1",
+    "bable": false,
+    "script":"nodeforum_index.js"   
+}

@@ -1,0 +1,7 @@
+{
+    "name": "Bot System",
+    "information": "Plugin bot system to create simple AI Bot Chat System.",
+    "version":"0.0.1",
+    "bable": true,
+    "script":"botsystem_index.js"
+}

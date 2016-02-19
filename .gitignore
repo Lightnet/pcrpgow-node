@@ -1,0 +1,8 @@
+DefinitelyTyped/
+node_modules/
+Robomongo/
+data/
+mongodb/
+*.bat
+*.lnk
+nwjs-v0.12.3-win-x64/

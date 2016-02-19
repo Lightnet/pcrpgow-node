@@ -1,0 +1,40 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts",
+        "!./DefinitelyTyped/**/*.ts"
+    ],
+    "files": [
+        "./app/config.ts",
+        "./app/initalizers/00_packetmodels.ts",
+        "./app/initalizers/01_mongodb.ts",
+        "./app/libs/gamemanage.ts",
+        "./app/libs/instancestatic.ts",
+        "./app/libs/instanceworld.ts",
+        "./app/libs/manageplugin.ts",
+        "./app/libs/socketio_module.ts",
+        "./app/libs/ViewEnableMultiFolders.ts",
+        "./app/routes/error_route.ts",
+        "./app/tokenkeys.ts",
+        "./plugin_modules/passport_mongoose_module/initalizers/group.ts",
+        "./plugin_modules/passport_mongoose_module/initalizers/user.ts",
+        "./plugin_modules/passport_mongoose_module/passport_route.ts",
+        "./plugin_modules/passport_mongoose_module/passport.ts",
+        "./plugin_modules/threejsgame/public/js/threejsbase.ts",
+        "./plugin_modules/threejsgame/public/js/threejsgame.ts",
+        "./public/js/script_html.ts",
+        "./server_express.ts",
+        "./tests/default_html.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}
