@@ -3,11 +3,9 @@
 	Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
 	Created By: Lightnet
 	License: Please read the readme.txt file for more information.
-  
-	Information: 
-	
+
+	Information: This must be init first start up for the passport to work on global variable.
 */
 //declare var mongoose;
-//var config = require(__dirname + "/../config.js");
-//var mongoose = require('mongoose');
-//mongoose.connect(config.database);
+var mongoose = require('mongoose');
+mongoose.connect(config.database_url);

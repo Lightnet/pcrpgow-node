@@ -9,8 +9,8 @@
     Developement: Early build & plan phase.
     
     Current Database:
-     * MongoDB:(On Hold)(Passport Worked)
-     * CouchDB:(Default)(Work In Progress)
+     * MongoDB:(Default)(Passport Worked)
+     * CouchDB:(On Hold)(Work In Progress)
      * Redis:(unknown)
     
     Created By: Lightnet
@@ -34,8 +34,10 @@
      * ...
      
     Nodejs Packages:
-     * Express
-     * Socket.io
+     * express
+     * socket.io
+	 * engine.io
+	 * engine.io-client
      
     Note: 
      * This is work in progress builds as well on going testing of structures.

@@ -1,3 +1,6 @@
+if (typeof __dirname == 'undefined') {
+    __dirname = ".";
+}
 var manageplugin = require('./app/libs/manageplugin.js');
 config = require(__dirname + "/app/config.js");
 manageplugin.setConfig(config);
@@ -6,8 +9,9 @@ var favicon = require('serve-favicon');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-require('./app/libs/ViewEnableMultiFolders');
 var io = require('socket.io')(http);
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 var methodOverride = require('method-override');
 var compression = require('compression');
 var session = require('express-session');
@@ -18,10 +22,24 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var path = require('path');
+var routes = require('./app/routes/index');
+var users = require('./app/routes/users');
+var enabledTransports = ['polling'];
+var engine = require('engine.io');
+var engineio = new engine.Server({ 'transports': ['websocket', 'polling'] });
+engineio.attach(http);
+engineio.on('connection', function (socket) {
+    socket.on('message', function (data) {
+        console.log(data);
+    });
+    socket.on('close', function () {
+        console.log("close");
+    });
+    console.log("connected...");
+});
 if (__dirname == null) {
     __dirname = "./";
 }
-var routes = express.Router();
 var init_files = fs.readdirSync(__dirname + "/app/initalizers");
 init_files.forEach(function (initFile) {
     if (path.extname(initFile) == '.js') {
@@ -68,21 +86,25 @@ else {
     console.log("[ = disable modules = ]");
 }
 if ('development' == config.mode) {
+    app.use(function (req, res, next) {
+        console.log("process....");
+        next();
+    });
     app.set('view engine', 'ejs');
     app.set('views', [__dirname + '/app/views']);
-    app.use("/", express.static('./public'));
-    app.use(favicon(__dirname + '/public/favicon.ico', { maxAge: 1000 }));
     app.use(compression());
     app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
-    app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+    app.use(bodyParser.urlencoded({ extended: false }));
     app.use(cookieParser());
-    manageplugin.AssignBeforeSession(app, session, config);
-    manageplugin.AssignSession(app, session, config);
-    app.use(methodOverride());
-    manageplugin.AssignAfterSession(app, session, config);
+    app.use(require('express-session')({
+        secret: 'keyboard cat',
+        resave: false,
+        saveUninitialized: false
+    }));
+    app.use(passport.initialize());
     app.use(flash());
-    app.use(routes);
+    app.use(passport.session());
+    app.use("/", express.static('./public'));
     console.log("[ = Development Express Config... = ]");
 }
 if ('production' == config.mode) {
@@ -92,12 +114,15 @@ if ('production' == config.mode) {
     manageplugin.AssignSession(app, session, config);
     app.use(methodOverride());
     manageplugin.AssignAfterSession(app, session, config);
-    app.use(flash());
     app.use(routes);
     console.log("[ = Production Express Config... = ]");
 }
 manageplugin.AssignRoute(routes, app);
+routes.get('/', function (req, res) {
+    res.render('home', {});
+});
 app.use('/', routes);
+require('./app/libs/passport_strategy')(passport);
 require('./app/libs/socketio_module.js')(io);
 var HOSTIP = process.env.IP || "0.0.0.0";
 var HOSTPORT = process.env.PORT || 3000;

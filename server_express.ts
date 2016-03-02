@@ -8,6 +8,8 @@
 
 */
 
+//https://docs.mongodb.org/getting-started/shell/tutorial/install-mongodb-on-windows/
+
 /// <reference path="./DefinitelyTyped/node/node.d.ts" />
 /// <reference path="./DefinitelyTyped/express/express.d.ts" />
 // ============================================== NODEJS
@@ -18,20 +20,19 @@
 
 /// <reference path="./app/libs/ViewEnableMultiFolders.ts" />
 /// <reference path="./app/libs/socketio_module.ts" />
-/// <reference path="./app/libs/gamemanage.ts" />
 /// <reference path="./app/libs/manageplugin.ts" />
-/// <reference path="./app/libs/instanceworld.ts" />
-
-/// <reference path="./plugin_modules/passport_mongoose_module/passport.ts" />
-/// <reference path="./plugin_modules/passport_mongoose_module/passport_route.ts" />
-
-//console.log("init server...");
-//console.log("init variable setup");
 
 /*global mongoose, config */
 
 //console.log(module);
-//import required libs
+
+if(typeof __dirname == 'undefined'){
+  __dirname = ".";
+}
+
+//===============================================
+// Plugin setup
+//===============================================
 var manageplugin = require('./app/libs/manageplugin.js');
 config = require(__dirname + "/app/config.js");
 manageplugin.setConfig(config);
@@ -41,31 +42,55 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 //enable multiple views for module builds
-require('./app/libs/ViewEnableMultiFolders');
+//require('./app/libs/ViewEnableMultiFolders');
 var io = require('socket.io')(http);
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 var methodOverride = require('method-override');
 var compression = require('compression');
 var session = require('express-session');
 var flash = require('connect-flash');
-//var MongoStore = require('connect-mongo')(session);
-//var passport = require('passport');
 var connect = require('connect');
-//var mongoose = require('mongoose');
-//mongoose.connect(config.database);
 var cookieParser = require('cookie-parser')
 var path = require('path');
 var bodyParser = require('body-parser');
 var fs = require('fs');
-//var net = require('net');
 var path = require('path');
+
+var routes = require('./app/routes/index');
+var users = require('./app/routes/users');
+
+var enabledTransports = ['polling']; // possible options: ['polling', 'websocket', 'flashsocket']
+var engine = require('engine.io');
+//var engineio = new engine.Server({ transports: enabledTransports });
+var engineio = new engine.Server({'transports': ['websocket', 'polling']});
+engineio.attach(http);
+//var engineio = engine.attach(http);
+//console.log(engineio);
+
+//app.get('/', function(req, res) {
+  //res.send('user ' + req.params.id);
+  //engineio.handleRequest(req, res);
+//});
+//app.get('/engine.io.js', function(req, res) {
+  //res.sendFile(path.join(__dirname + '/node_modules/engine.io/lib/engine.io.js'));
+//});
+
+engineio.on('connection', function (socket) {
+  socket.on('message', function(data){
+    console.log(data);
+  });
+  socket.on('close', function(){
+    console.log("close");
+  });
+  console.log("connected...");
+});
 
 if(__dirname == null){
 	__dirname = "./";
 }
 
-
-//var cachetime = 1000;
-var routes = express.Router(); //Router is for page access
+//var routes = express.Router(); //Router is for page access
 
 //load initalizers
 //console.log("loading Sync initalizers:");
@@ -126,119 +151,87 @@ if (config.benablemodules) {
 	console.log("[ = disable modules = ]");
 }
 
-//require('./app/passport')(passport);
-
 if ('development' == config.mode) {
+  app.use(function(req, res, next) {
+    console.log("process....");
+    //res.header('Access-Control-Allow-Origin', 'http://localhost:3000/');
+    //res.header("Access-Control-Allow-Origin", "*");
+    //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    //engineio.handleRequest(req, res);
+    next();
+  });
+
+  //app.use("/engine.io/",function(req, res, next) {
+    //console.log("engine.io");
+    //res.header('Access-Control-Allow-Origin', "true");
+    //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    //engineio.handleRequest(req, res);
+    //next();
+  //});
+
 
 	app.set('view engine', 'ejs'); // set up ejs for templating
-
 	app.set('views',[__dirname + '/app/views']);
 
-	app.use("/", express.static('./public'));//redirect folder path
+  //app.use(favicon(__dirname + '/public/favicon.ico',{ maxAge: 1000 }));
+  //app.use(favicon('./public/favicon.ico',{ maxAge: 1000 }));
+  app.use(compression());
+  // parse application/json
+  app.use(bodyParser.json());
+  // parse application/x-www-form-urlencoded
+  app.use(bodyParser.urlencoded({extended:false})); // get information from html forms
+  // parse application/vnd.api+json as json
+  //app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+  // required for passport
+  app.use(cookieParser()); // required before session.
+  app.use(require('express-session')({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+  }));
+  app.use(passport.initialize());
+  app.use(flash());
+  app.use(passport.session());
 
-    app.use(favicon(__dirname + '/public/favicon.ico',{ maxAge: 1000 }));
-    //app.use(favicon('./public/favicon.ico',{ maxAge: 1000 }));
-    app.use(compression());
-		// parse application/json
-    app.use(bodyParser.json());
-		// parse application/x-www-form-urlencoded
-    app.use(bodyParser.urlencoded({extended:true})); // get information from html forms
-
-    // parse application/vnd.api+json as json
-    app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
-    // required for passport
-    app.use(cookieParser()); // required before session.
-    //app.use(session({secret: SECRET,key: KEY,proxy: true // if you do SSL outside of node.}));
-
-	manageplugin.AssignBeforeSession(app,session,config);
-	manageplugin.AssignSession(app,session,config);
-
-	/*
-	if(config.bdatabasesession){
-		app.use(session({
-			secret: config.SECRET,
-			key: config.KEY,
-			store: new MongoStore({
-				url: config.database //url: 'mongodb://guest:guest@staff.mongohq.com:10034/mmo'
-			}),
-			//cookie: { maxAge: 900000 } // expire session in 15 min or 900 seconds
-			cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 },
-			resave: true,
-			saveUninitialized: true
-		}));
-	}else{
-		app.use(session({
-			secret: config.SECRET,
-			key: config.KEY,
-			cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 },
-			resave: true,
-			saveUninitialized: true
-		}));
-	}
-	*/
-
-    app.use(methodOverride());
-    manageplugin.AssignAfterSession(app,session,config);
-    //app.use(passport.initialize());//working with the express 4
-    //app.use(passport.session()); // persistent login sessions
-    app.use(flash()); // use connect-flash for flash messages stored in session
-    app.use(routes);
+  app.use("/", express.static('./public'));//redirect folder path
 	console.log("[ = Development Express Config... = ]");
 }
 
 if ('production' == config.mode) {
-    //console.log('production');
-    // configure stuff here
-    app.enable('trust proxy');
-    //app.set('port', port);
-    app.set('view engine', 'ejs'); // set up ejs for templating
-    //app.use(express.static('public'), { maxAge: cachetime });
-    //app.use("/js", express.static('./js'));//redirect folder path
-    //app.use(favicon('./public/favicon.ico',{ maxAge: 1000 }));
-    //app.use(compression());
-    // required for passport
-    //app.use(cookieParser()); // required before session.
+  //console.log('production');
+  // configure stuff here
+  app.enable('trust proxy');
+  //app.set('port', port);
+  app.set('view engine', 'ejs'); // set up ejs for templating
+  //app.use(express.static('public'), { maxAge: cachetime });
+  //app.use("/js", express.static('./js'));//redirect folder path
+  //app.use(favicon('./public/favicon.ico',{ maxAge: 1000 }));
+  //app.use(compression());
+  // required for passport
+  //app.use(cookieParser()); // required before session.
 
-	manageplugin.AssignBeforeSession(app,session,config);
-	manageplugin.AssignSession(app,session,config);
-
-	/*
-    if(config.bdatabasesession){
-		app.use(session({
-			secret: config.SECRET,
-			key: config.KEY,
-			store: new MongoStore({
-				url: config.database //url: 'mongodb://guest:guest@staff.mongohq.com:10034/mmo'
-			}),
-			//cookie: { maxAge: 900000 } // expire session in 15 min or 900 seconds
-			cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 }
-		}));
-	}else{
-		app.use(session({
-			secret: config.SECRET,
-			key: config.KEY,
-			cookie: { maxAge: 365 * 24 * 60 * 60 * 1000 }
-		}));
-	}
-	*/
-    app.use(methodOverride());
-    manageplugin.AssignAfterSession(app,session,config);
-    //app.use(passport.initialize());//working with the express 4
-    //app.use(passport.session()); // persistent login sessions
-    app.use(flash()); // use connect-flash for flash messages stored in session
-    app.use(routes);
+  manageplugin.AssignBeforeSession(app,session,config);
+  manageplugin.AssignSession(app,session,config);
+  app.use(methodOverride());
+  manageplugin.AssignAfterSession(app,session,config);
+  //app.use(passport.initialize());//working with the express 4
+  //app.use(passport.session()); // persistent login sessions
+  //app.use(flash()); // use connect-flash for flash messages stored in session
+  app.use(routes);
 	console.log("[ = Production Express Config... = ]");
 }
 
 //set up route if exist for plugin module
-manageplugin.AssignRoute(routes,app);
+manageplugin.AssignRoute(routes, app);
 
-//require('./app/routes/passport_route')(routes, passport); //passport for access
-//require('./app/routes/error_route')(routes);
-//routes.get('/',function(req, res){
+routes.get('/',function(req, res){
 	//res.send('Hello World');
-//});
+  res.render('home', {});
+});
+//set up route urls
 app.use('/', routes);
+
+require('./app/libs/passport_strategy')(passport);
 
 // ==============================================
 // socket.io
@@ -247,7 +240,7 @@ require('./app/libs/socketio_module.js')(io);
 
 var HOSTIP = process.env.IP || "0.0.0.0";
 var HOSTPORT = process.env.PORT || 3000;
-
+//console.log(process);
 http.listen(HOSTPORT, HOSTIP, function () {
 	//console.log('http://' + HOSTIP + ':' + HOSTPORT +'/');
 	//console.log('http://' + HOSTIP + ':' + HOSTPORT +'/'+'forum');

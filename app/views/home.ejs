@@ -2,20 +2,24 @@
 <html>
 	<head id="head">
 		<title>Node Web Sandbox API</title>
-
-
-		<link rel="stylesheet" type="text/css" href="js/themes/default/easyui.css">
-    	<link rel="stylesheet" type="text/css" href="js/themes/icon.css">
-		<link rel="stylesheet" type="text/css" href="css/uikit.gradient.min.css" />
-		<link rel="stylesheet" type="text/css" href="css/home.css" />
 		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/knockout.js"></script>
-		<script type="text/javascript" src="js/uikit.min.js"></script>
-		<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+		<script type="text/javascript" src="/engine.io.js"></script>
 
-		<script type="text/javascript" src="js/messagesystem.js"></script>
-
+		<script>
+		  // eio = Socket
+			//https://github.com/socketio/engine.io-client/blob/master/engine.io.js
+			//engine.io-client > engine.io.js
+		  var socket = eio('ws://localhost:3000');
+		  socket.on('open', function(){
+		    socket.on('message', function(data){
+					console.log(data);
+				});
+		    socket.on('close', function(){
+					console.log("close");
+				});
+				console.log("open....");
+		  });
+		</script>
 		<style type="text/css">
 
 		</style>
@@ -25,47 +29,12 @@
 	</head>
 
 	<body id="body" class="yui3-skin-sam" data-spy="scroll" style="width:100%;height:100%">
-		<nav class="uk-navbar">
-		    <ul class="uk-navbar-nav">
-		        <li class=""><a href="/">Home</a></li>
-		        <li><a href="/game">Game</a></li>
-		        <li class="uk-parent"><a href="/forum">Forum</a></li>
-
-
-		    </ul>
-
-			<div class="uk-navbar-flip">
-		        <ul class="uk-navbar-nav">
-		            <li><a href="/support">Support</a></li>
-					<li><a href="/logout">Logout</a></li>
-		        </ul>
-		    </div>
-		</nav>
-
-		<div>
-			<div id="nav">
-				Link<br>
-				Link<br>
-				Link<br>
-			</div>
-
 			<div id="section">
 				<h1>Title</h1>
 				<p>
 				Hello World!
 				</p>
 			</div>
-
-			<div id="w" class="easyui-window" title="Basic Window" data-options="iconCls:'icon-save'" style="width:500px;height:300px;padding:10px;">
-				<div id="ChatMessage" style="width: 440px; height: 180px; overflow-y: scroll;">
-
-				</div>
-
-				<input id="chatmessage" type="text" name="ChatInput" value="hello" onkeypress="return ChatEnterMessage(event)">
-				<button type="button" onclick="ChatButtonPress();">Chat</button>
-    		</div>
-
-
 
 			<div id="footer">
 			Created by: Lightnet

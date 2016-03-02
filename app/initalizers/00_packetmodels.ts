@@ -3,10 +3,11 @@
 	Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
 	Created By: Lightnet
 	License: Please read the readme.txt file for more information.
-  
-	Information: 
-	
+
+	Information:
+
 */
+/*
 declare var PacketModels;
 
 var Parser = require('binary-parser').Parser;
@@ -37,3 +38,4 @@ module.exports = PacketModels = {
 	updateroom: new Parser().skip(1)
 		.string("command", StringOptions)
 }
+*/

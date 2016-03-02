@@ -1,7 +1,7 @@
 {
-    "name": "couchdb module",
+    "name": "mongoose module",
     "information": "Very Basic Module Test",
     "version":"0.0.1",
-    "bable": true,
+    "bable": false,
     "script":"module_index.js"
 }
