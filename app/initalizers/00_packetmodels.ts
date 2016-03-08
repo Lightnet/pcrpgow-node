@@ -1,12 +1,11 @@
 /*
-	Project Name: Node Web Sandbox API
-	Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
+	Name:
+	Link:https://bitbucket.org/Lightnet/
 	Created By: Lightnet
-	License: Please read the readme.txt file for more information.
-
-	Information:
-
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
 */
+
 /*
 declare var PacketModels;
 

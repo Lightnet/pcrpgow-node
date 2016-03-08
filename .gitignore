@@ -3,6 +3,9 @@ node_modules/
 Robomongo/
 data/
 mongodb/
+nwjs/
+plugin_modules/
+test/
 *.bat
 *.lnk
 nwjs-v0.12.3-win-x64/

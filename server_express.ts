@@ -1,15 +1,12 @@
 /*
-    Project Name: Node Web Sandbox API
-    Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
-    Created By: Lightnet
-    License: Please read the readme.txt file for more information.
-
-    Information:
-
+	Name:
+	Link:https://bitbucket.org/Lightnet/
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
 */
 
 //https://docs.mongodb.org/getting-started/shell/tutorial/install-mongodb-on-windows/
-
 /// <reference path="./DefinitelyTyped/node/node.d.ts" />
 /// <reference path="./DefinitelyTyped/express/express.d.ts" />
 // ============================================== NODEJS
@@ -18,18 +15,14 @@
 /// <reference path="./app/initalizers/01_mongodb.ts" />
 /// <reference path="./app/routes/error_route.ts" />
 
-/// <reference path="./app/libs/ViewEnableMultiFolders.ts" />
-/// <reference path="./app/libs/socketio_module.ts" />
+/// <reference path="./app/libs/socketio_handle.ts" />
+/// <reference path="./app/libs/engineio_handle.ts" />
 /// <reference path="./app/libs/manageplugin.ts" />
-
 /*global mongoose, config */
-
 //console.log(module);
-
 if(typeof __dirname == 'undefined'){
   __dirname = ".";
 }
-
 //===============================================
 // Plugin setup
 //===============================================
@@ -41,8 +34,7 @@ var favicon = require('serve-favicon');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-//enable multiple views for module builds
-//require('./app/libs/ViewEnableMultiFolders');
+
 var io = require('socket.io')(http);
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -67,23 +59,12 @@ var engineio = new engine.Server({'transports': ['websocket', 'polling']});
 engineio.attach(http);
 //var engineio = engine.attach(http);
 //console.log(engineio);
-
 //app.get('/', function(req, res) {
   //res.send('user ' + req.params.id);
   //engineio.handleRequest(req, res);
 //});
-//app.get('/engine.io.js', function(req, res) {
-  //res.sendFile(path.join(__dirname + '/node_modules/engine.io/lib/engine.io.js'));
-//});
-
-engineio.on('connection', function (socket) {
-  socket.on('message', function(data){
-    console.log(data);
-  });
-  socket.on('close', function(){
-    console.log("close");
-  });
-  console.log("connected...");
+app.get('/engine.io.js', function(req, res) {
+  res.sendFile(path.join(__dirname + '/node_modules/engine.io-client/engine.io.js'));
 });
 
 if(__dirname == null){
@@ -153,14 +134,13 @@ if (config.benablemodules) {
 
 if ('development' == config.mode) {
   app.use(function(req, res, next) {
-    console.log("process....");
+    //console.log("process....");
     //res.header('Access-Control-Allow-Origin', 'http://localhost:3000/');
     //res.header("Access-Control-Allow-Origin", "*");
     //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     //engineio.handleRequest(req, res);
     next();
   });
-
   //app.use("/engine.io/",function(req, res, next) {
     //console.log("engine.io");
     //res.header('Access-Control-Allow-Origin', "true");
@@ -168,11 +148,8 @@ if ('development' == config.mode) {
     //engineio.handleRequest(req, res);
     //next();
   //});
-
-
 	app.set('view engine', 'ejs'); // set up ejs for templating
 	app.set('views',[__dirname + '/app/views']);
-
   //app.use(favicon(__dirname + '/public/favicon.ico',{ maxAge: 1000 }));
   //app.use(favicon('./public/favicon.ico',{ maxAge: 1000 }));
   app.use(compression());
@@ -192,7 +169,6 @@ if ('development' == config.mode) {
   app.use(passport.initialize());
   app.use(flash());
   app.use(passport.session());
-
   app.use("/", express.static('./public'));//redirect folder path
 	console.log("[ = Development Express Config... = ]");
 }
@@ -222,7 +198,7 @@ if ('production' == config.mode) {
 }
 
 //set up route if exist for plugin module
-manageplugin.AssignRoute(routes, app);
+manageplugin.SetRoutes(routes,app);
 
 routes.get('/',function(req, res){
 	//res.send('Hello World');
@@ -230,13 +206,33 @@ routes.get('/',function(req, res){
 });
 //set up route urls
 app.use('/', routes);
-
+// ==============================================
+// passport strategy
+// ==============================================
 require('./app/libs/passport_strategy')(passport);
-
 // ==============================================
 // socket.io
 // ==============================================
-require('./app/libs/socketio_module.js')(io);
+require('./app/libs/socketio_handle.js')(io);
+// ==============================================
+// engine.io
+// ==============================================
+require('./app/libs/engineio_handle.js')(engineio);
+
+//var jsdom  = require('jsdom');
+//jsdom.env({
+  //html: "<html><body><canvas id='application-canvas'></canvas></body></html>",
+  //done: function(errs, _window) {
+    //global var
+    //document = _window.document;
+    //window = _window
+	//var Ammo = require('ammo.js');
+    //global.window = _window;
+    //console.log(Ammo);
+	//console.log("load window var");
+    //LoadPlayCanvas();
+  //}
+//});
 
 var HOSTIP = process.env.IP || "0.0.0.0";
 var HOSTPORT = process.env.PORT || 3000;

@@ -1,29 +1,20 @@
 /*
-	Project Name: Node Web Sandbox API
-	Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
+	Name:
+	Link:https://bitbucket.org/Lightnet/
 	Created By: Lightnet
-	License: Creative Commons [Note there multiple Licenses]
+	License: Creative Commons Zero [Note there multiple Licenses]
   	Please read the readme.txt file for more information.
-  
-	Information: 
-	
 */
-/// <reference path="../../DefinitelyTyped/cryptojs/cryptojs.d.ts" />
 
-//var cookie = require("cookie");
-//var connect = require("connect");
 
+// <reference path="../../DefinitelyTyped/cryptojs/cryptojs.d.ts" />
 var manageplugin = require('./manageplugin.js');
-
-
-var fs = require('fs');
-var path = require('path');
+//var fs = require('fs');
+//var path = require('path');
 //var crypto = require('crypto');
 
-module.exports = function(_io){
+module.exports = function(io){
 	console.log("[ = socket.io = ]");
-    io = _io;
-	var db;
     // ==========================================
     // Configure
     // ==========================================
@@ -74,16 +65,14 @@ module.exports = function(_io){
 	//var hash = crypto.createHash('md5').update(name).digest('hex');
 	//console.log(hash); // 9b74c9897bac770ffc029102a200c5de
 	//console.log(module_data);
-	
+
     io.on('connection', function(socket){// client listen when connect with the user client web browser
         console.log('a user connected');
-		//console.log(socket);
 		//add on socket.io
-		
-		manageplugin.AssignConnect(io, socket, db);
-		
-
-		socket.on('ping', function(){socket.emit('pong');});
+		manageplugin.Call_SocketIO_Connection(io, socket);
+		socket.on('ping', function(){
+			socket.emit('pong');
+		});
 
 		//var hash = crypto.createHash('md5').update(socket.id).digest('hex');//md5 hash
 		var hash = socket.id;//md5 hash
@@ -131,9 +120,8 @@ module.exports = function(_io){
 		socket.on('disconnect', function(data){
 			console.log('disconnect message: ' + data);
 			//console.log(socket);
-			manageplugin.AssignDisconect(io, socket,db);
+			manageplugin.Call_SocketIO_Disconect(io, socket);
 		})
     });
-
 	console.log("[ = socket.io config... = ]");
 };

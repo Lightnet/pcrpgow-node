@@ -1,16 +1,11 @@
 /*
-    Project Name: Node Web Sandbox API
-    Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
-    Created By: Lightnet
-    License: Please read the readme.txt file for more information.
-  
-    Information:
-    
+	Name:
+	Link:https://bitbucket.org/Lightnet/
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
 */
 
-//var manage = require('./app/libs/gamemanage');
-//console.log(manage);
-//var instance_manage = manage();
 
 //declare var modules;
 //declare var addModule;
@@ -29,32 +24,34 @@ class managePlugin{
     self:any = this;
     name:string;
     id:any;
-    
     config:any;
-    
     databasetype:string = "";
     database:any = [];
-    
     io:any;
     app:any;
-    
+    routes:any;
     modulelist:any = [];
     routeList:any = [];
+
     socketconnectList:any = [];
     socketdisconnectList:any = [];
-    
-    
+
+    eio_connectlist:any [];
+    eio_messagelist:any [];
+    eio_closelist:any [];
+
     appBeforeSession:any = [];
     appSession:any = [];
     appAfterSession:any = [];
-    
-    
+
     //console.log("init manage");
-    
     constructor() {
         if(Globals.m_Instance == null){
             Globals.m_Instance = this.self;
             this.id =  Math.random();
+            this.eio_connectlist = [];
+            this.eio_messagelist = [];
+            this.eio_closelist = [];
         }else if(Globals.m_Instance != this.self ){
             this.self = Globals.m_Instance;
         }
@@ -62,17 +59,20 @@ class managePlugin{
       //console.log(module);
       //console.log(Globals);
     }
-    
+//===============================================
+// Config
+//===============================================
     setConfig(_config){
         this.config = _config;
     }
-    
     getConfig(){
         return this.config;
     }
-    
+//===============================================
+// Database
+//===============================================
     //type, database class
-    addDatabase(_data:any = {}){
+    setDatabase(_data:any = {}){
         if(_data.type != null ){
             if(_data.database !=null){
                 this.databasetype = _data.type;
@@ -80,7 +80,6 @@ class managePlugin{
             }
         }
     }
-    
     //get current database type
     getDatabase(_type:string = ""){
         if(_type != null){
@@ -91,110 +90,93 @@ class managePlugin{
             }
         }
     }
-    
+    //add plugin
     addModule (_module){
         //console.log("Added Module...");
         this.modulelist.push(_module);
-        
+
         //route page url
         if(typeof _module.setroute === 'function'){
-            //set route page url
-            //scriptmodule.setroute(routes,app);
-            //console.log("function found!");
             this.routeList.push(_module);
-        }else{
-            //console.log("function not found!");
         }
-        
-        //socket connection
-        if( typeof _module.socket_connect === "function"){
-			this.socketconnectList.push(_module);
-			//console.log("socket_connect function exist!");
-		}else{
-			//console.log("socket_connect function doesn't exist!");
-		}
 
-		if( typeof _module.socket_disconnect === "function"){
-			this.socketdisconnectList.push(_module);
-			//console.log("socket_disconnect function exist!");
-		}else{
-			//console.log("socket_disconnect function doesn't exist!");
+        //socket.io
+        if( typeof _module.socketio_connect === "function"){
+			this.socketconnectList.push(_module);
 		}
-		
-		if( typeof _module.setBeforeSession === "function"){
+		if( typeof _module.socketio_disconnect === "function"){
+			this.socketdisconnectList.push(_module);
+		}
+        //engine.io
+        if( typeof _module.engineio_connect === "function"){
+			this.eio_connectlist.push(_module);
+		}
+        if( typeof _module.engineio_message === "function"){
+			this.eio_messagelist.push(_module);
+		}
+        if( typeof _module.engineio_close === "function"){
+			this.eio_closelist.push(_module);
+		}
+        //session
+        if( typeof _module.setBeforeSession === "function"){
 			this.appBeforeSession.push(_module);
 		}
-		
 		if( typeof _module.setSession === "function"){
 			this.appSession.push(_module);
 		}
-		
 		if( typeof _module.setAfterSession === "function"){
 			this.appAfterSession.push(_module);
 		}
     }
-    
+    //add plugin
+    removeModule(_module){
+        for(var i = 0; i < this.modulelist.length;i++){
+            if(this.modulelist[i] == _module){
+            }
+        }
+    }
+    //get list plugin module
+    getModuleList(){
+        return this.modulelist;
+    }
+
     AssignBeforeSession(_app,_session,_config){
         for(var i = 0; i < this.appBeforeSession.length;i++){
             this.appBeforeSession[i].setBeforeSession(_app,_session,_config);
         }
     }
-    
     AssignSession(_app,_session,_config){
         for(var i = 0; i < this.appSession.length;i++){
             this.appSession[i].setSession(_app,_session,_config);
         }
     }
-    
     AssignAfterSession(_app,_session,_config){
         for(var i = 0; i < this.appAfterSession.length;i++){
             this.appAfterSession[i].setAfterSession(_app,_session,_config);
         }
     }
-    
-    
-    //add plugin
-    removeModule(_module){
-        for(var i = 0; i < this.modulelist.length;i++){
-            if(this.modulelist[i] == _module){
-                
-            }
+//===============================================
+// Engine.IO
+//===============================================
+    //engine.io call
+    call_engineio_connect(eio,socket){
+        for(var i = 0; i < this.eio_connectlist.length;i++){
+            this.eio_connectlist[i].engineio_connect(eio,socket);
         }
     }
-    
-    //get list plugin module
-    getModuleList(){
-        return this.modulelist;
-    }
-    
-    //set route
-    AssignRoute(_routes,_app){
-        for (var i = 0; i < this.routeList.length; i++ ){
-			this.routeList[i].setroute(_routes,_app);
-		}
-    }
-    
-    //set connection
-    AssignConnect(_io, _socket, _db){
-        for (var i = 0; i < this.socketconnectList.length; i++ ){
-			this.socketconnectList[i].socket_connect(_io, _socket,_db);
-		}
-    }
-    //set disconnection
-    AssignDisconect(_io, _socket,_db){
-        for (var i = 0; i < this.socketdisconnectList.length; i++ ){
-			this.socketdisconnectList[i].socket_disconnect(_io, _socket,_db);
+    call_engineio_message(data,socket){
+        for(var i = 0; i < this.eio_messagelist.length;i++){
+            this.eio_messagelist[i].engineio_message(data,socket);
         }
     }
-    
-    //router url set folder
-    addAppView(_app,_view){
-        //console.log("Adding app view...");
-        var views = _app.get('views');
-	    views.push(_view);
-	    _app.set('views', views);
+    call_engineio_close(socket){
+        for(var i = 0; i < this.eio_closelist.length;i++){
+            this.eio_closelist[i].engineio_close(socket);
+        }
     }
-    
+//===============================================
+// Socket.IO
+//===============================================
     //set socket.io set
     setSocketIO(_io){
         this.io = _io;
@@ -202,6 +184,34 @@ class managePlugin{
     //get socket.io
     getSocketIO(){
         return this.io;
+    }
+    //set connection
+    Call_SocketIO_Connection(_io, _socket){
+        for (var i = 0; i < this.socketconnectList.length; i++ ){
+			this.socketconnectList[i].socketio_connect(_io, _socket);
+		}
+    }
+    //set disconnection
+    Call_SocketIO_Disconect(_io, _socket){
+        for (var i = 0; i < this.socketdisconnectList.length; i++ ){
+			this.socketdisconnectList[i].socketio_disconnect(_io, _socket);
+        }
+    }
+
+    //router url set folder
+    addAppView(_app,_view){
+        //console.log("Adding app view...");
+        var views = _app.get('views');
+	    views.push(_view);
+	    _app.set('views', views);
+    }
+
+    //set route
+    SetRoutes(_routes,_app){
+        //this.routes = _routes;
+        for (var i = 0; i < this.routeList.length; i++ ){
+            this.routeList[i].setroute(_routes,_app);
+        }
     }
 }
 

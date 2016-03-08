@@ -8,73 +8,53 @@
 
 
 //Note this base function current set to the plugin module setup
-
-//var express = require('express');
+var express = require('express');
 var manageplugin = require('../../app/libs/manageplugin');
-/*global getModules */
-var io;
-var socket;
-var db;
-
+var playcanvas_engine = require('./playcanvas_engine.js');
 //===============================================
 // Config
 //===============================================
 module.exports._config = require('./index.json');
-
-
-//===============================================
-// Session
-//===============================================
-
-/*
-module.exports.setBeforeSession = function(app,session,config){
-  //console.log('Base Module ');
-}
-module.exports.setSession = function(app,session,config){
-  //console.log('Base Module ');
-}
-module.exports.setAfterSession = function(app,session,config){
-  //console.log('Base Module ');
-}
-*/
 //===============================================
 // route
 //===============================================
-
-/*
 module.exports.setroute = function(routes,app){
-  //console.log('Base Module ');
-  //set current plugin public folder dir
-  app.use(express.static(__dirname + '/public'));
-  //set current views folder dir
+	//console.log('Base Module ');
+	//set current plugin public folder dir
+	app.use(express.static(__dirname + '/public'));
+	//set current views folder dir
 	manageplugin.addAppView(app, __dirname + '/views');
 
-  //routes.get('/basemodule', function (req, res) {
-     //res.contentType('text/html');
-     //res.send('Hello World!');
-	//});
+	routes.get('/pc', function (req, res) {
+		res.contentType('text/html');
+		//res.send('Hello World!');
+		res.render('pc.ejs', {});
+	});
+
+	routes.get('/eio', function (req, res) {
+		res.contentType('text/html');
+		//res.send('Hello World!');
+		res.render('eio.ejs', {});
+	});
 };
-*/
 //===============================================
-// Socket.io
+// Socket.IO
 //===============================================
-/*
 module.exports.socketio_connect = function(io, socket){
+	playcanvas_engine.socketio_connect(io, socket);
 };
 module.exports.socketio_disconnect = function(io, socket){
+ 	playcanvas_engine.socketio_disconnect(io, socket);
 };
-*/
 //===============================================
-// Engine.io
+// Engine.IO
 //===============================================
-/*
 module.exports.engineio_connect = function(engineio,socket){
-
+	playcanvas_engine.engineio_connect(engineio,socket);
 };
 module.exports.engineio_message = function(data,socket){
-
+	playcanvas_engine.engineio_message(data,socket);
 };
 module.exports.engineio_close = function(socket){
-
+	playcanvas_engine.engineio_close(socket);
 };
-*/

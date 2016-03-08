@@ -1,12 +1,12 @@
 /*
-    Project Name: Node Web Sandbox API
-    Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
-    Created By: Lightnet
-    License: Please read the readme.txt file for more information.
-
-    Information:
-
+	Name:
+	Link:https://bitbucket.org/Lightnet/
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
 */
+
+
 //var config = require(__dirname + "/../config.js");
 try{
   //global variable to access all in sub files.

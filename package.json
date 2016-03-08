@@ -35,7 +35,9 @@
     "extend":"latest",
     "binary-parser":"1.1.2",
     "engine.io":"latest",
-    "engine.io-client":"latest"
+    "engine.io-client":"latest",
+    "jsdom":"latest",
+    "ammo.js":"latest"
   },
    "window": {
     "title": "PCRPGOW",

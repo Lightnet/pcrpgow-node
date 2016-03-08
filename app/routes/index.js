@@ -1,3 +1,12 @@
+/*
+	Name:
+	Link:https://bitbucket.org/Lightnet/
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
+*/
+
+
 var express = require('express');
 var passport = require('passport');
 //var Account = require('../models/account');
@@ -5,7 +14,8 @@ var router = express.Router();
 
 router.get('/', function (req, res) {
         if (req.user == null) {
-          res.render('home', { user: req.user });
+          //res.render('home', { user: req.user });
+          res.render('networkio', { user: req.user });
             /*
             res.render('index', { benable_facebook: config.benable_facebook,
                 benable_twitter: config.benable_twitter,

@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+	<head id="head">
+		<title>Node Sandbox API</title>
+		<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="/engine.io.js"></script>
+		<style type="text/css">
+
+		</style>
+		<script type="text/javascript">
+			var socketio = io();
+			socketio.emit('ping');
+			socketio.on('pong', function(){
+   				console.log('socket.io pong');
+ 			});
+			socketio.on('connect', function(){
+   				console.log('socket.io user connect');
+ 			});
+			socketio.on('disconnect', function(){
+   				console.log('socket.io user disconnected');
+ 			});
+		</script>
+		<script>
+		  //https://github.com/socketio/engine.io-client/blob/master/engine.io.js
+		  //engine.io-client > engine.io.js
+		  var engineio = eio('ws://localhost:3000');
+		  engineio.on('open', function(){
+			  console.log("engine.io user open!");
+			  //console.log(engineio);
+			  engineio.send('pong');
+			  engineio.on('message', function(data){
+				  //console.log("-----");
+				  console.log(data);
+			  });
+			  engineio.on('close', function(){
+				  console.log("engine.io server close!");
+			  });
+		  });
+		</script>
+	</head>
+	<body id="body" class="yui3-skin-sam" data-spy="scroll" style="width:100%;height:100%">
+		<div id="section">
+			<h1>Title</h1>
+				<p>Hello World!</p>
+			</div>
+			<div id="footer"></div>
+		</div>
+		<script>
+		</script>
+	</body>
+</html>

@@ -1,12 +1,11 @@
 /*
-    Project Name: Node Web Sandbox API
-    Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
-    Created By: Lightnet
-    License: Please read the readme.txt file for more information.
-
-    Information:
-
+	Name:
+	Link:https://bitbucket.org/Lightnet/
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
 */
+
 // load all the things we need
 var LocalStrategy = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;

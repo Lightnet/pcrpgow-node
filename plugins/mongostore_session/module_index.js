@@ -1,12 +1,12 @@
 /*
-    Project Name: Node Web Sandbox API
-    Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
-    Created By: Lightnet
-    License: Please read the readme.txt file for more information.
-  
-    Information:
-    
+	Name:
+	Link:https://bitbucket.org/Lightnet/
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
 */
+
+
 var express = require('express');
 
 //===============================================
@@ -21,7 +21,7 @@ module.exports.setBeforeSession = function(app,session,config){
 module.exports.setSession = function(app,session,config){
     var MongoStore = require('connect-mongo')(session);
     console.log("init Session");
-    
+
     if(config.bdatabasesession){
 		app.use(session({
 			secret: config.SECRET,
@@ -46,5 +46,5 @@ module.exports.setSession = function(app,session,config){
 }
 
 module.exports.setAfterSession = function(app,session,config){
-    
+
 }

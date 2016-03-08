@@ -1,12 +1,12 @@
 /*
-    Project Name: Node Web Sandbox API
-    Link:https://bitbucket.org/Lightnet/nodewebsandboxapi
-    Created By: Lightnet
-    License: Please read the readme.txt file for more information.
-  
-    Information:
-    
+	Name:
+	Link:https://bitbucket.org/Lightnet/
+	Created By: Lightnet
+	License: Creative Commons Zero [Note there multiple Licenses]
+  	Please read the readme.txt file for more information.
 */
+
+
 var express = require('express');
 
 //===============================================
@@ -19,9 +19,8 @@ module.exports._config = require('./index.json');
 //===============================================
 
 module.exports.setroute = function(routes,app){
-  
+
   //console.log('plugin module');
   app.use(express.static(__dirname + '/public'));
 
 };
-
