@@ -22,7 +22,9 @@
 		</script>
 		<script>
 		  //https://github.com/socketio/engine.io-client/blob/master/engine.io.js
-		  //engine.io-client > engine.io.js
+		  //engine.io-client package > engine.io.js
+		  //console.log(eio);
+		  //var engineio = eio('ws://localhost:3000');
 		  var engineio = eio('ws://localhost:3000');
 		  engineio.on('open', function(){
 			  console.log("engine.io user open!");
@@ -36,6 +38,7 @@
 				  console.log("engine.io server close!");
 			  });
 		  });
+
 		</script>
 	</head>
 	<body id="body" class="yui3-skin-sam" data-spy="scroll" style="width:100%;height:100%">

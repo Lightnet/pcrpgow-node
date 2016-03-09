@@ -6,7 +6,6 @@
   	Please read the readme.txt file for more information.
 */
 
-
 //declare var modules;
 //declare var addModule;
 //declare var removeModule;
@@ -15,7 +14,7 @@
 
 export module Globals
 {
-   export var m_Name : string = "Game Manage";
+   export var m_Name : string = "Plugin Manage";
    export var m_Instance : any;
 }
 
@@ -94,12 +93,10 @@ class managePlugin{
     addModule (_module){
         //console.log("Added Module...");
         this.modulelist.push(_module);
-
         //route page url
         if(typeof _module.setroute === 'function'){
             this.routeList.push(_module);
         }
-
         //socket.io
         if( typeof _module.socketio_connect === "function"){
 			this.socketconnectList.push(_module);
@@ -210,6 +207,7 @@ class managePlugin{
     SetRoutes(_routes,_app){
         //this.routes = _routes;
         for (var i = 0; i < this.routeList.length; i++ ){
+            //console.log("route(s)");
             this.routeList[i].setroute(_routes,_app);
         }
     }

@@ -12,7 +12,6 @@ var manageplugin = require('./manageplugin.js');
 //var fs = require('fs');
 //var path = require('path');
 //var crypto = require('crypto');
-
 module.exports = function(io){
 	console.log("[ = socket.io = ]");
     // ==========================================
@@ -59,7 +58,6 @@ module.exports = function(io){
 	//var three_manage = new threejs_managenode(); //new class function
 	//three_manage.io_db(io,db);
 
-
 	//console.log(three_manage);
 	//var name = 'braitsch';
 	//var hash = crypto.createHash('md5').update(name).digest('hex');
@@ -67,7 +65,7 @@ module.exports = function(io){
 	//console.log(module_data);
 
     io.on('connection', function(socket){// client listen when connect with the user client web browser
-        console.log('a user connected');
+        console.log('socket.io user connected');
 		//add on socket.io
 		manageplugin.Call_SocketIO_Connection(io, socket);
 		socket.on('ping', function(){
@@ -118,7 +116,7 @@ module.exports = function(io){
             //console.log('message: ' + data);
         //});
 		socket.on('disconnect', function(data){
-			console.log('disconnect message: ' + data);
+			console.log('socket.io disconnect message: ' + data);
 			//console.log(socket);
 			manageplugin.Call_SocketIO_Disconect(io, socket);
 		})

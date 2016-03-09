@@ -10,7 +10,7 @@
 	Please read the readme.txt file for more information.
 
 */
-console.log("USER?");
+//console.log("USER?");
 // load the things we need
 var mongoose = require('mongoose');
 var bcrypt   = require('bcrypt-nodejs');

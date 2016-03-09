@@ -6,22 +6,17 @@
   	Please read the readme.txt file for more information.
 */
 
-
-var express = require('express');
-
+//var express = require('express');
 //===============================================
 // Config
 //===============================================
 module.exports._config = require('./index.json');
-
-module.exports.setBeforeSession = function(app,session,config){
+//module.exports.setBeforeSession = function(app,session,config){
     //mongoose.connect(config.database);
-}
-
+//}
 module.exports.setSession = function(app,session,config){
     var MongoStore = require('connect-mongo')(session);
-    console.log("init Session");
-
+    //console.log("init Session");
     if(config.bdatabasesession){
 		app.use(session({
 			secret: config.SECRET,
@@ -45,6 +40,5 @@ module.exports.setSession = function(app,session,config){
 	}
 }
 
-module.exports.setAfterSession = function(app,session,config){
-
-}
+//module.exports.setAfterSession = function(app,session,config){
+//}

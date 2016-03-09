@@ -13,7 +13,7 @@
 //declare var addView;
 var Globals;
 (function (Globals) {
-    Globals.m_Name = "Game Manage";
+    Globals.m_Name = "Plugin Manage";
 })(Globals = exports.Globals || (exports.Globals = {}));
 var managePlugin = (function () {
     //console.log("init manage");
@@ -192,6 +192,7 @@ var managePlugin = (function () {
     managePlugin.prototype.SetRoutes = function (_routes, _app) {
         //this.routes = _routes;
         for (var i = 0; i < this.routeList.length; i++) {
+            //console.log("route(s)");
             this.routeList[i].setroute(_routes, _app);
         }
     };

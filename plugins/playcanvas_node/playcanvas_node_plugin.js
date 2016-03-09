@@ -6,7 +6,6 @@
   	Please read the readme.txt file for more information.
 */
 
-
 //Note this base function current set to the plugin module setup
 var express = require('express');
 var manageplugin = require('../../app/libs/manageplugin');
@@ -19,19 +18,21 @@ module.exports._config = require('./index.json');
 // route
 //===============================================
 module.exports.setroute = function(routes,app){
-	//console.log('Base Module ');
+	//console.log('setroute Module ');
 	//set current plugin public folder dir
+	//console.log(__dirname + '/public');
 	app.use(express.static(__dirname + '/public'));
+	//console.log('setroute path:' + __dirname + '/public');
 	//set current views folder dir
 	manageplugin.addAppView(app, __dirname + '/views');
-
 	routes.get('/pc', function (req, res) {
+		console.log("pc url");
 		res.contentType('text/html');
 		//res.send('Hello World!');
 		res.render('pc.ejs', {});
 	});
-
 	routes.get('/eio', function (req, res) {
+		console.log("engine.io test url");
 		res.contentType('text/html');
 		//res.send('Hello World!');
 		res.render('eio.ejs', {});

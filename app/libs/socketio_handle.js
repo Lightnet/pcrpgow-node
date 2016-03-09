@@ -60,7 +60,7 @@ module.exports = function (io) {
     //console.log(hash); // 9b74c9897bac770ffc029102a200c5de
     //console.log(module_data);
     io.on('connection', function (socket) {
-        console.log('a user connected');
+        console.log('socket.io user connected');
         //add on socket.io
         manageplugin.Call_SocketIO_Connection(io, socket);
         socket.on('ping', function () {
@@ -109,7 +109,7 @@ module.exports = function (io) {
         //console.log('message: ' + data);
         //});
         socket.on('disconnect', function (data) {
-            console.log('disconnect message: ' + data);
+            console.log('socket.io disconnect message: ' + data);
             //console.log(socket);
             manageplugin.Call_SocketIO_Disconect(io, socket);
         });

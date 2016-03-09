@@ -44,18 +44,20 @@ webgl_null.prototype={
     attachShader:function(){},
 };
 //https://github.com/tmpvar/jsdom
-var jsdom = require("jsdom").jsdom;
-document = jsdom("<html><body><canvas id='application-canvas'></canvas></body></html>");
-window = document.defaultView;
-Ammo = require('ammo.js'); //need to be here to since it need window variable
-var canvas = window.document.getElementById("application-canvas");
-//override function to null webgl for headless functions
-canvas.getContext=function(canvas,options){
-	//webgl_null functions
-	return new webgl_null();
+if(typeof window === 'undefined'){
+    var jsdom = require("jsdom").jsdom;
+    document = jsdom("<html><body><canvas id='application-canvas'></canvas></body></html>");
+    window = document.defaultView;
+    Ammo = require('ammo.js'); //need to be here to since it need window variable
+    var canvas = window.document.getElementById("application-canvas");
+    //override function to null webgl for headless functions
+    canvas.getContext=function(canvas,options){
+    	//webgl_null functions
+    	return new webgl_null();
+    }
+    //override boolean to run headless else console.log error
+    window.WebGLRenderingContext = true;
 }
-//override boolean to run headless else console.log error
-window.WebGLRenderingContext = true;
 //===============================================
 // browser variable setup end
 //===============================================
@@ -75,16 +77,17 @@ pc_app.preload(function (err) {
 });
 
 function CreateScene0(pc,app){
-	console.log("create scene?");
+	//console.log("create scene?");
+    //stat app
 	app.start();
-
+    //update
 	app.on("update", function (dt) {
 		//console.log("update?");
 	});
 }
 
 function CreateScene(pc,app){
-
+    //stat app
   app.start();
 
   // Fill the available space at full resolution

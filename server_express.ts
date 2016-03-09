@@ -20,7 +20,7 @@
 /// <reference path="./app/libs/manageplugin.ts" />
 /*global mongoose, config */
 //console.log(module);
-if(typeof __dirname == 'undefined'){
+if(typeof __dirname === 'undefined'){
   __dirname = ".";
 }
 //===============================================
@@ -34,7 +34,8 @@ var favicon = require('serve-favicon');
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-
+//enable multiple views for module builds
+//require('./app/libs/ViewEnableMultiFolders');
 var io = require('socket.io')(http);
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -59,10 +60,6 @@ var engineio = new engine.Server({'transports': ['websocket', 'polling']});
 engineio.attach(http);
 //var engineio = engine.attach(http);
 //console.log(engineio);
-//app.get('/', function(req, res) {
-  //res.send('user ' + req.params.id);
-  //engineio.handleRequest(req, res);
-//});
 app.get('/engine.io.js', function(req, res) {
   res.sendFile(path.join(__dirname + '/node_modules/engine.io-client/engine.io.js'));
 });
@@ -204,6 +201,12 @@ routes.get('/',function(req, res){
 	//res.send('Hello World');
   res.render('home', {});
 });
+
+routes.get('/pc',function(req, res){
+	//res.send('Hello World');
+  res.render('pc', {});
+});
+
 //set up route urls
 app.use('/', routes);
 // ==============================================
